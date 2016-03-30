@@ -1,0 +1,19 @@
+#!/bin/sh
+
+xhost +local:docker &>/dev/null
+
+mkdir -p ~/.config/spotify ~/.cache/spotify
+
+docker run \
+  --rm=true \
+  --shm-size=256m \
+  --device /dev/snd:/dev/snd \
+  --volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
+  --volume /etc/asound.conf:/etc/asound.conf:ro \
+  --volume $HOME/.config/spotify:/home/arch/.config/spotify:rw \
+  --volume $HOME/.cache/spotify:/home/arch/.cache/spotify:rw \
+  --env uid=$(id -u) \
+  --env gid=$(id -g) \
+  --env DISPLAY=unix$DISPLAY \
+  --name spotify \
+  local/spotify &
